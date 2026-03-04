@@ -11,17 +11,23 @@ import AIrouter from './routes/ai.js'
 import SportsRouter from './routes/sport.js'
 import DeepSleepRouter from './routes/deepSleep.js'
 import menstrualRouter from './routes/menstrual.js'
+import UploadRouter from './routes/upload.js'
+import PostRouter from './routes/post.js'
+import CommentRouter from './routes/useComment.js'
+import Likerouter from './routes/like.js'
+import path from 'path'
 const app = express()
-app.use(cors()
-    //     ({
+app.use(cors(
+    //     {
     //     origin: 'http://localhost:5173',
     //     credentials: true
-    // })
-);
-
-
+    // }
+))
+app.use((req, res, next) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin")
+    next()
+})
 app.use(express.json())
-
 app.use('/api', Userrouter)
 app.use('/api/sleep', Sleeprouter);
 app.use('/api/steps', Sportrouter);
@@ -31,6 +37,12 @@ app.use('/api/ai', AIrouter);
 app.use('/api/sport', SportsRouter);
 app.use('/api/deepsleep', DeepSleepRouter)
 app.use('/api/menstrual', menstrualRouter)
+//暴露静态资源
+app.use('/api/uploads', UploadRouter)
+app.use('/api/post', PostRouter)
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')))
+app.use('/api/comment', CommentRouter)
+app.use('/api/articles', Likerouter)
 connectDB()
 
 app.listen(3000, () => {

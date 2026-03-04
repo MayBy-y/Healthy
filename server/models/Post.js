@@ -21,13 +21,17 @@ const PostSchema = new mongoose.Schema({
         type: [String],
         default: [] //默认值
     },
-    likes: {
-        type: Number,
-        default: 0
+    cover: {
+        type: String,
+        require: true,
     },
     views: {
         type: Number,
         default: 0
+    },
+    summary: {
+        type: String,
+        required: true,
     }
 }, {
     timestamps: true,

@@ -1,13 +1,16 @@
 import express from 'express';
-import { createPost } from '../controllers/createPost.js';
+import { createPost, getownPost, getOnly, getTags, getTime, addView } from '../controllers/createPost.js';
 import { auth } from '../middleware/auth.js';
 const PostRouter = express.Router();
-PostRouter.post('/post', auth, createPost)
+PostRouter.post('/new', auth, createPost)
 
-PostRouter.get('getPost', auth, async (req, res) => {
-    try {
-        const { date } = req.body
-    } catch (error) {
+PostRouter.get('/list', auth, getownPost)
 
-    }
-})
+PostRouter.get('/only', auth, getOnly)
+
+PostRouter.get('/tags', auth, getTags)
+
+PostRouter.get('/time', auth, getTime)
+
+PostRouter.post('/:id/view', addView)
+export default PostRouter

@@ -2,7 +2,7 @@ import Post from '../models/Post.js'
 import axios from 'axios'
 export const createPost = async (req, res) => {
     try {
-        const { title, content, tags } = req.body
+        const { title, content, tags, cover, summary } = req.body
         const userId = req.userId
         if (!title || !content) {
             return res.status(400).json({
@@ -13,7 +13,9 @@ export const createPost = async (req, res) => {
             authorId: userId,
             title,
             content,
-            tags
+            tags,
+            cover,
+            summary
         })
         res.status(200).json({
             message: '发帖成功',
@@ -26,22 +28,70 @@ export const createPost = async (req, res) => {
         })
     }
 }
-
-export const fetchArticles = async (req, res) => {
+//获得一个人的所有文章
+export const getownPost = async (req, res) => {
     try {
-        const { topic = 'nutrition', limit = 10 } = req.query
-        const { data } = await axios.get(
-            'https://tools.cdc.gov/api/v2/resources/media',
-            {
-                params: {
-                    topic,
-                    language: 'en',
-                    limit,
-                    sort: ''
-                },
-            }
-        )
+        const { userid } = req.query
+        const list = await Post.find({ authorId: userid })
+        if (list.length === 0) {
+            return res.json({
+                code: 200,
+                msg: "暂时没有文章"
+            })
+        }
+        res.json({ code: 200, list })
     } catch (error) {
-
+        console.log(error);
+        return res.json({ code: 500, msg: '服务器错误' })
     }
+}
+//获得指定id的文章
+export const getOnly = async (req, res) => {
+    try {
+        const { postId } = req.query
+        const article = await Post.findOne({ _id: postId })
+        res.json({ code: 200, article })
+    } catch (error) {
+        console.log(error);
+        return res.json({ code: 500, msg: '服务器错误' })
+    }
+}
+//获得指定标签的文章
+export const getTags = async (req, res) => {
+    try {
+        const { Posttags } = req.query
+        const list = await Post.find({ tags: Posttags })
+        if (list.length === 0) {
+            return res.json({
+                code: 200,
+                msg: '暂无文章'
+            })
+        }
+        res.json({ code: 200, list })
+    } catch (error) {
+        console.log(error);
+        return res.json({ code: 500, msg: '服务器错误' })
+    }
+}
+//按时间顺序显示所有文章
+export const getTime = async (req, res) => {
+    try {
+        const list = await Post.find().sort({ createdAt: -1 })
+        res.json({ code: 200, list })
+    } catch (error) {
+        console.log(error);
+        return res.json({ code: 500, msg: '服务器错误' })
+    }
+
+}
+//浏览量
+export const addView = async (req, res) => {
+    const { id } = req.params
+
+    await Post.findByIdAndUpdate(
+        id,
+        { $inc: { views: 1 } },
+        { new: false }
+    )
+    res.json({ code: 200 })
 }

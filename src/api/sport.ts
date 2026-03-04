@@ -10,8 +10,6 @@ const todayDate = new Date().toISOString().split('T')[0]
 console.log(todayDate);
 
 const token = localStorage.getItem("token") || "";
-console.log(token);
-
 export function addSport(data: sportItem) {
     return axios.post('http://localhost:3000/api/sport', data,
         { headers: { Authorization: `${token}` }, })

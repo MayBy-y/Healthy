@@ -29,7 +29,6 @@ onMounted(async()=> {
    }
 })
 const activeTab = ref<number | null>(null)
-  console.log('2',tips);
 </script>
 <template>
     <ul class="today">

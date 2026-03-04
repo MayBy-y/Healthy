@@ -15,7 +15,6 @@ const analyMen = async (req, res) => {
             return res.json({
                 code: 400,
                 msg: "没有找到月经记录，请先输入一次记录再生成总结。"
-
             });
         }
         const text = list.map(i => {
